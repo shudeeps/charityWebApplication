@@ -12,6 +12,8 @@ use Session;
 
 class ProductController extends Controller
 {
+
+  
     public function getIndex()
     {
 
@@ -93,7 +95,7 @@ class ProductController extends Controller
 
     public function getCheckout(){
 
-   
+      
         if (!session()->has('cart')) {
             return view('shop.shoping-cart', ['products' => null]);
         }
@@ -108,7 +110,7 @@ class ProductController extends Controller
 
     public function postCheckout(Request $request){
 
-        if (!session()->has('cart')) {
+       if (!session()->has('cart')) {
             return view('shop.shoping-cart', ['products' => null]);
         }
         $oldCart = session()->get('cart');

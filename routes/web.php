@@ -45,7 +45,7 @@ Route::get('/shopping-cart',[
 Route::get('/checkout',[
         'uses'=>'ProductController@getCheckout',
         'as'=>'checkout',
-        'middleware'=>'auth'
+       'middleware'=>'auth'
 ]);
 
 Route::post('/checkout',[
@@ -100,14 +100,29 @@ Route::group(['middleware'=>'auth'],function(){
                 'uses'=>'UserController@getLogout',
                 'as'=>'user.logout'
         ]);        
+       
 });     
         
         
 });
 
+Route::get('admin/logout',[
+        'uses'=>'Auth\LoginController@getLogout',
+        'as'=>'admin.logout'
+]); 
 
 
 Auth::routes();
+
+Route::get('/login/admin', 'Auth\LoginController@showAdminLoginForm');
+Route::get('/register/admin', 'Auth\RegisterController@showAdminRegisterForm');
+Route::post('/login/admin', 'Auth\LoginController@adminLogin')->name('admin.login');
+Route::post('/register/admin', 'Auth\RegisterController@createAdmin');
+
+Route::get('/admin', 'Auth\LoginController@adminHomePage');
+
+
+// Route::view('/admin', 'admin.home');
 
 Route::get('/home', 'ProductController@getIndex')->name('home');
 

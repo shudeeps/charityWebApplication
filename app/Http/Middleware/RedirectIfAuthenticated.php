@@ -17,11 +17,22 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
+  
         if (Auth::guard($guard)->check()) {
-
-            session()->put('oldUrl',$request->url());
-            return redirect('home');
+       
+            session()->put('oldUrl',$request->url());                   
+            return redirect()->route('user.signin');  
+           
         }
+
+        if ($guard == "admin" && Auth::guard($guard)->check()) {   
+                  
+            return response()->view('admin.home');
+       
+        }  
+     
+
+       
 
         return $next($request);
     }

@@ -45,13 +45,13 @@ class UserController extends Controller
     public function getSignin()
     {
 
-        return view('user.signin');
+       return view('user.signin');
     }
 
     public function postSignin(Request $request)
     {
 
-        $this->validate($request, [
+            $this->validate($request, [
             'email' => 'email|required',
             'password' => 'required|min:4'
         ]);
@@ -63,7 +63,10 @@ class UserController extends Controller
         ])) {
 
             if(session()->has('oldUrl')){
+
+            
                 $oldUrl = session()->get('oldUrl');
+              
                 session()->forget('oldUrl');
                 return redirect()->route($oldUrl);
             }

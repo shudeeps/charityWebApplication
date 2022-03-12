@@ -16,8 +16,7 @@ class UserController extends Controller
 
     public function postSignup(Request $request)
     {
-        //  dd($request->input('role'));
-        $this->validate($request, [
+       $this->validate($request, [
             'email' => 'email|required|unique:users',
             'password' => 'required|min:4'
         ]);
@@ -26,17 +25,17 @@ class UserController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
             'role' => $request->input('role'),
-            'remember_token' =>$request->input('role')
+            'remember_token' => $request->input('role')
         ]);
 
         $user->save();
 
         Auth::login($user);
 
-        if(session()->has('oldUrl')){
+        if (session()->has('oldUrl')) {
             $oldUrl = session()->get('oldUrl');
             session()->forget('oldUrl');
-            return redirect()->route($oldUrl);
+            return redirect()->to($oldUrl);
         }
 
         return redirect()->route('user.profile');
@@ -45,13 +44,13 @@ class UserController extends Controller
     public function getSignin()
     {
 
-       return view('user.signin');
+     //   dd('hererer');
+        return view('user.signin');
     }
 
     public function postSignin(Request $request)
     {
-
-            $this->validate($request, [
+        $this->validate($request, [
             'email' => 'email|required',
             'password' => 'required|min:4'
         ]);
@@ -62,65 +61,65 @@ class UserController extends Controller
             'password' => $request->input('password')
         ])) {
 
-            if(session()->has('oldUrl')){
+            if (session()->has('oldUrl')) {
 
-            
+
                 $oldUrl = session()->get('oldUrl');
-              
+
+            //    dd($oldUrl);
+
                 session()->forget('oldUrl');
-                return redirect()->route($oldUrl);
+                return redirect()->to($oldUrl);
             }
 
-          return redirect()->route('user.profile');
+            return redirect()->route('user.profile');
         }
-       
-        //return redirect()->back();
+
+        return redirect()->back();
     }
 
 
     public function getProfile()
     {
-        $orders=Auth::user()->orders;     
-       
-        if(count($orders)==0){            
-           $orders=null;
-               
-        }else{
-                $orders->transform(function($order,$key){
-                $order->cart=unserialize($order->cart);
+        $orders = Auth::user()->orders;
+
+        if (count($orders) == 0) {
+            $orders = null;
+        } else {
+            $orders->transform(function ($order, $key) {
+                $order->cart = unserialize($order->cart);
                 return $order;
             });
-               
         }
-     //   dd($orders);
-        switch (Auth::user()->role){
-            case(1) :               
+        //   dd($orders);
+        switch (Auth::user()->role) {
+            case (1):
                 return redirect()->route('member.Dashboard');
                 break;
             default:
-            return view('user.profile',['orders'=>$orders]);
-
-            }    
+                return view('user.profile', ['orders' => $orders]);
+        }
 
         //dd($orders);
-       
+
     }
 
     public function getMemberProfile()
     {
-        $orders=Auth::user()->orders;
-        $orders->transform(function($order,$key){
-            $order->cart=unserialize($order->cart);
+        $orders = Auth::user()->orders;
+        $orders->transform(function ($order, $key) {
+            $order->cart = unserialize($order->cart);
             return $order;
         });
 
         //dd($orders);
-        return view('member.index',['orders'=>$orders]);
+        return view('member.index', ['orders' => $orders]);
     }
 
 
-    public function getLogout(){
+    public function getLogout()
+    {
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('user.signin');
     }
 }
